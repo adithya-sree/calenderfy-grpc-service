@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+service Calenderfy {
+    rpc Running (EmptyRequest) returns (RunningResponse);
+
+    rpc Uptime (EmptyRequest) returns (UptimeResponse);
+}
+
+message EmptyRequest {
+
+}
+
+message RunningResponse {
+    bool running = 1;
+}
+
+message UptimeResponse {
+    int64 uptime = 1;
+    string startedAt = 2;
+}
