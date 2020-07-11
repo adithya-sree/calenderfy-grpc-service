@@ -1,7 +1,7 @@
 package server
 
 import (
-	"calenderfy-grpc-service/app/database"
+	"calenderfy-grpc-service/app/dao"
 	"calenderfy-grpc-service/app/logger"
 	pb "calenderfy-grpc-service/proto"
 	"context"
@@ -18,11 +18,11 @@ func init() {
 
 type CalenderfyServer struct {
 	pb.UnimplementedCalenderfyServer
-	db database.Database
+	db dao.Dao
 }
 
-func NewServer(database database.Database) *CalenderfyServer {
-	return &CalenderfyServer{db: database}
+func NewServer(dao dao.Dao) *CalenderfyServer {
+	return &CalenderfyServer{db: dao}
 }
 
 func (s CalenderfyServer) Running(ctx context.Context, in *pb.EmptyRequest) (*pb.RunningResponse, error) {

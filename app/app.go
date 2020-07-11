@@ -2,7 +2,7 @@ package app
 
 import (
 	"calenderfy-grpc-service/app/config"
-	"calenderfy-grpc-service/app/database"
+	"calenderfy-grpc-service/app/dao"
 	"calenderfy-grpc-service/app/logger"
 	"calenderfy-grpc-service/app/server"
 	pb "calenderfy-grpc-service/proto"
@@ -21,7 +21,7 @@ type App struct {
 }
 
 func NewApp(c config.Configs) (*App, error) {
-	db, err := database.NewDatabase(c)
+	db, err := dao.NewDao(c)
 	if err != nil {
 		out.Println("error while initialzing application", err)
 		return &App{}, err
