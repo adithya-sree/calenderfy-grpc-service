@@ -1,23 +1,22 @@
 package main
 
 import (
-	"calenderfy-grpc-service/app"
-	"calenderfy-grpc-service/app/config"
-	"calenderfy-grpc-service/app/logger"
-	"log"
+	"calendarfy-grpc-service/app"
+	"calendarfy-grpc-service/app/config"
+	"calendarfy-grpc-service/app/logger"
 )
 
-var out *log.Logger = logger.GetLogger("main.go")
-var c config.Configs = config.GetConfigs()
+var out = logger.GetLogger("main.go")
+var c = config.GetConfigs()
 
 func main() {
-	out.Println("starting calenderfy-grpc-service")
+	out.Println("starting calendarfy-grpc-service")
 
-	app, err := app.NewApp(c)
+	a, err := app.NewApp(c)
 	if err != nil {
 		out.Println("service was not started, exceptions during startup", err)
 		return
 	}
 
-	app.Run()
+	a.Run()
 }

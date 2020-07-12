@@ -1,11 +1,10 @@
 package dao
 
 import (
-	"calenderfy-grpc-service/app/config"
-	"calenderfy-grpc-service/app/logger"
+	"calendarfy-grpc-service/app/config"
+	"calendarfy-grpc-service/app/logger"
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var out *log.Logger = logger.GetLogger("database.go")
+var out = logger.GetLogger("database.go")
 
 type Dao struct {
 	mongo  *mongo.Database
@@ -23,10 +22,10 @@ type Dao struct {
 func NewDao(c config.Configs) (Dao, error) {
 	out.Println("initializing mongo client", c.MongoHost)
 
-	options := options.Client().ApplyURI(
+	opt := options.Client().ApplyURI(
 		fmt.Sprintf("mongodb+srv://%s:%s@%s/%s?retryWrites=true&w=majority", c.MongoUser, c.MongoPassword, c.MongoHost, c.MongoDatabase))
 
-	client, err := mongo.NewClient(options)
+	client, err := mongo.NewClient(opt)
 	if err != nil {
 		out.Println("error while initializing client", err)
 		return Dao{}, err
@@ -38,7 +37,7 @@ func NewDao(c config.Configs) (Dao, error) {
 	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
-		out.Println("error while connectiing to mongo db at host", c.MongoHost)
+		out.Println("error while connecting to mongo db at host", c.MongoHost)
 		return Dao{}, err
 	}
 
@@ -60,7 +59,7 @@ func (d *Dao) FindByEmail(email string) (Profile, error) {
 		return Profile{}, err
 	}
 
-	out.Printf("\nsuccessfully found profile %s for email %s in %dms", p, email, time.Since(start))
+	out.Printf("successfully found profile %s for email %s in %dms", p, email, time.Since(start))
 
 	return p, nil
 }
@@ -77,5 +76,27 @@ func (d *Dao) InsertProfile(p Profile) error {
 	}
 
 	out.Printf("succesfully inserted profile %s, result %s in %dms", p, insertResult.InsertedID, time.Since(start))
+	return nil
+}
+
+func (d *Dao) UpdateProfile(old Profile, new Profile) error {
+	out.Printf("attempting to update profile %s", old)
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	start := time.Now()
+	updateResult, err := d.mongo.Collection(d.config.MongoCollection).UpdateOne(ctx, bson.M{"email": old.Email}, bson.D{
+		{"$set", bson.D{
+			{"email", new.Email},
+			{"pushToken", new.PushToken},
+			{"events", new.Events},
+		}},
+	})
+
+	if err != nil {
+		out.Printf("error while updating profile %s, error %v, failed in %sms", old, err, time.Since(start))
+		return err
+	}
+
+	out.Printf("successfully updated profile %s, matched %v documents and updated %v documents in %sms", new, updateResult.MatchedCount, updateResult.ModifiedCount, time.Since(start))
 	return nil
 }

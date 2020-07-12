@@ -19,7 +19,7 @@ func GetConfigs() Configs {
 		LogMaxAge:       3,
 		LogMaxBackups:   28,
 		LogFile:         "/var/log/transact.log",
-		Port:            "4900",
+		Port:            "42980",
 		MongoHost:       "testapi-jzige.mongodb.net/",
 		MongoUser:       "admin",
 		MongoPassword:   "admin",

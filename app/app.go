@@ -1,29 +1,28 @@
 package app
 
 import (
-	"calenderfy-grpc-service/app/config"
-	"calenderfy-grpc-service/app/dao"
-	"calenderfy-grpc-service/app/logger"
-	"calenderfy-grpc-service/app/server"
-	pb "calenderfy-grpc-service/proto"
+	"calendarfy-grpc-service/app/config"
+	"calendarfy-grpc-service/app/dao"
+	"calendarfy-grpc-service/app/logger"
+	"calendarfy-grpc-service/app/server"
+	pb "calendarfy-grpc-service/proto"
 	"fmt"
-	"log"
 	"net"
 
 	"google.golang.org/grpc"
 )
 
-var out *log.Logger = logger.GetLogger("app.go")
+var out = logger.GetLogger("app.go")
 
 type App struct {
-	server *server.CalenderfyServer
+	server *server.CalendarfyServer
 	config config.Configs
 }
 
 func NewApp(c config.Configs) (*App, error) {
 	db, err := dao.NewDao(c)
 	if err != nil {
-		out.Println("error while initialzing application", err)
+		out.Println("error while initializing application", err)
 		return &App{}, err
 	}
 
@@ -43,6 +42,6 @@ func (a *App) Run() {
 	out.Println("application starting on port", a.config.Port)
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterCalenderfyServer(grpcServer, a.server)
+	pb.RegisterCalendarfyServer(grpcServer, a.server)
 	grpcServer.Serve(lis)
 }

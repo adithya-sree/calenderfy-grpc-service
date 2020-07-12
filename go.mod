@@ -1,4 +1,4 @@
-module calenderfy-grpc-service
+module calendarfy-grpc-service
 
 go 1.13
 

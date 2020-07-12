@@ -1,1 +1,1 @@
-# calenderfy-grpc-service
+# calendarfy-grpc-service

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-service Calenderfy {
+service Calendarfy {
     rpc Running (EmptyRequest) returns (RunningResponse);
 
     rpc Uptime (EmptyRequest) returns (UptimeResponse);
